@@ -58,14 +58,26 @@
   }
   .cell.b1 { --band: var(--pine); } .cell.b2 { --band: var(--gold); } .cell.b3 { --band: var(--plum); }
   .cell.b4 { --band: var(--teal); } .cell.b5 { --band: var(--tangerine); }
-  .cell.s-top { border-bottom: var(--bw) solid var(--band); }
-  .cell.s-right { border-left: var(--bw) solid var(--band); }
-  .cell.s-bottom { border-top: var(--bw) solid var(--band); }
-  .cell.s-left { border-right: var(--bw) solid var(--band); }
-  .cell.corner { --cellbg: var(--berry); --cellfg: var(--snow); }
-  .cell.corner svg { width: 60%; height: 60%; }
   .cell svg { width: 46%; height: 46%; }
-  .cell.passed { opacity: 0.32; filter: saturate(0.6); }
+  .cell.passed { opacity: 0.62; }
+  .cell.prop { display: flex; align-items: stretch; box-shadow: none; }
+  .cell.s-top { flex-direction: column-reverse; } .cell.s-bottom { flex-direction: column; }
+  .cell.s-left { flex-direction: row-reverse; } .cell.s-right { flex-direction: row; }
+  .band { flex: none; flex-basis: var(--bw); background: var(--band); display: grid; place-items: center; }
+  .band svg { width: calc(var(--bw) * 0.82); height: calc(var(--bw) * 0.82); color: var(--snow);
+    opacity: 0; transform: scale(0.3); transition: opacity 0.4s, transform 0.4s; }
+  .cell.b2 .band svg { color: var(--ink); }
+  .cell.passed .band svg { opacity: 1; transform: none; }
+  .info { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 0.4vmin; padding: 0.3vmin; text-align: center; }
+  .name { font: 800 clamp(6.5px, 1.4vmin, 20px)/1.05 var(--font-body); text-transform: uppercase; letter-spacing: 0.02em; }
+  .price { font: 400 clamp(7px, 1.55vmin, 22px)/1 var(--font-display); color: var(--berry); }
+  .cell.corner, .cell.dip { display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.5vmin; text-align: center; padding: 0.3vmin; box-sizing: border-box; }
+  .cell.corner { --cellbg: var(--berry); --cellfg: var(--snow); }
+  .cell.dip { --cellbg: var(--gold); --cellfg: var(--ink); }
+  .cell.corner svg, .cell.dip svg { width: 38%; height: 38%; flex: none; }
+  @media (max-width: 600px) { .price { display: none; } }
   .cell.label {
     --cellbg: var(--ink); --cellfg: var(--gold);
     border: 0.4vmin dashed var(--gold);
@@ -137,7 +149,7 @@
   @keyframes pulse { 50% { transform: scale(1.04); } }
 
   .status {
-    margin: 0; font-weight: 800; font-size: min(3.4cqw, 5.5cqh);
+    margin: 0; font-weight: 800; font-size: min(3cqw, 5.5cqh);
     letter-spacing: 0.08em; text-transform: uppercase; text-align: center;
   }
   .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: min(1.6cqw, 12px); }
@@ -263,8 +275,14 @@
     for (r = 2; r <= rows; r++) pos.push([cols, r, 'right']);
     for (c = cols - 1; c >= 1; c--) pos.push([c, rows, 'bottom']);
     for (r = rows - 1; r >= 2; r--) pos.push([1, r, 'left']);
-    var icons = ['house', 'coin', 'key', 'tree', 'note', 'house', 'gift', 'coin'];
-    var corners = [cols - 1, cols + rows - 2, 2 * cols + rows - 3], cornerIcons = ['star', 'die', 'flake'];
+    var corners = [cols - 1, cols + rows - 2, 2 * cols + rows - 3], cornerIcons = ['star', 'gift', 'flake'];
+    var cornerNames = ['Gold Star', 'Secret Santa', 'Snowed In'], dips = [5, 17, 27, 36], n = 0;
+    var STREETS = ['Holly Lane', 'Ivy Row', 'Tinsel Way', 'Cracker Close', 'Sprout Street', 'Gravy Lane',
+      'Mince Pie Mews', 'Pudding Place', 'Custard Court', 'Robin Road', 'Snowy Hill', 'Frost Walk',
+      'Sleigh Street', 'Reindeer Rise', 'Rudolph Road', 'Bauble Bank', 'Candle Close', 'Carol Court',
+      'Stocking Row', 'Chimney Climb', 'Fireside Way', 'Ginger Gate', 'Cocoa Corner', 'Nutmeg Nook',
+      'Bell Lane', 'Star Square', 'Angel Avenue', 'Elf End', 'Jingle Green', 'Santa Street', 'North Pole Park'];
+    function svg(id) { return '<svg aria-hidden="true"><use href="#i-' + id + '"/></svg>'; }
     pos.forEach(function (p, i) {
       var el = document.createElement('div');
       el.className = 'cell';
@@ -273,10 +291,19 @@
       if (i === 0) { el.classList.add('label'); el.textContent = 'START'; }
       else if (i === pos.length - 1) { el.classList.add('label'); el.textContent = 'FINISH'; }
       else {
-        var k = corners.indexOf(i), icon = icons[i % 8];
-        if (k !== -1) { el.classList.add('corner'); icon = cornerIcons[k]; }
-        else el.classList.add('s-' + p[2], 'b' + (Math.floor((i - 1) / 3) % 6));
-        el.innerHTML = '<svg aria-hidden="true"><use href="#i-' + icon + '"/></svg>';
+        var k = corners.indexOf(i);
+        if (k !== -1) {
+          el.classList.add('corner');
+          el.innerHTML = svg(cornerIcons[k]) + '<span class="name">' + cornerNames[k] + '</span>';
+        } else if (dips.indexOf(i) !== -1) {
+          el.classList.add('dip');
+          el.innerHTML = svg('card') + '<span class="name">Lucky Dip</span>';
+        } else {
+          el.classList.add('prop', 's-' + p[2], 'b' + (Math.floor(n / 3) % 6));
+          el.innerHTML = '<span class="band">' + svg('house') + '</span><span class="info"><span class="name">' +
+            STREETS[n % STREETS.length] + '</span><span class="price">\u00a3' + (60 + n * 10) + '</span></span>';
+          n++;
+        }
       }
       board.insertBefore(el, pawn);
       cells.push(el);
@@ -372,9 +399,10 @@
     document.body.classList.toggle('running', running);
     document.body.classList.toggle('done', done);
     document.body.classList.toggle('last-minute', !done && secs <= 60 && remaining < DURATION);
-    statusEl.textContent = done ? "Time's up!"
-      : running ? (secs <= 60 ? 'Last minute!' : 'Game on')
-      : remaining < DURATION ? 'Paused' : 'Ready to play';
+    var bank = ' \u00b7 \u00a3' + secs + ' in the bank';
+    statusEl.textContent = done ? "Time's up! The bank is empty"
+      : (running ? (secs <= 60 ? 'Last minute!' : 'Game on')
+      : remaining < DURATION ? 'Paused' : 'Ready to play') + bank;
     startBtn.textContent = done ? 'Play again' : running ? 'Pause' : remaining < DURATION ? 'Resume' : 'Start';
   }
 
