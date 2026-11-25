@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Timers</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Nunito:wght@600;800&display=swap">
+<style>
+  :root { color-scheme: dark; --felt: #0e3a2c; --felt-deep: #08261c; --berry: #cf3a30; --gold: #f4c24f; --snow: #fdf5e2; --ink: #071d15; }
+  body { margin: 0; min-height: 100vh; box-sizing: border-box; padding: 48px max(16px, env(safe-area-inset-left, 0px));
+    background: radial-gradient(ellipse at center, var(--felt), var(--felt-deep)) var(--felt-deep);
+    color: var(--snow); font: 600 18px "Nunito", "Trebuchet MS", system-ui, sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
+  h1 { margin: 0; font: 400 clamp(36px, 8vw, 72px) "Titan One", "Arial Rounded MT Bold", sans-serif; color: var(--gold); text-shadow: 0 0.08em 0 var(--ink); }
+  ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+  a { display: block; width: min(320px, 80vw); box-sizing: border-box; padding: 24px; border-radius: 16px;
+    background: var(--snow); color: var(--ink); text-decoration: none; border-bottom: 10px solid var(--berry); }
+  a:hover { transform: translateY(-3px); }
+  a:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+  a strong { display: block; font: 400 26px "Titan One", "Arial Rounded MT Bold", sans-serif; margin-bottom: 6px; }
+  li:last-child a { border-bottom-color: var(--gold); }
+</style>
+</head>
+<body>
+  <h1>Timers</h1>
+  <ul>
+    <li><a href="christmas-timer/"><strong>Christmas board game</strong>10 minutes, with a pawn hopping round a festive track.</a></li>
+    <li><a href="property-timer/"><strong>Property game</strong>10 minutes, with a coin sand timer and property squares.</a></li>
+  </ul>
+</body>
+</html>
